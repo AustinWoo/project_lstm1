@@ -22,13 +22,18 @@ def load_dataset(filename, fields):
     return ds
 
 
-def transfer_dataset(dataset, seq_len, fields):
+def transfer_dataset(dataset, seq_len, fields, logfile):
     x_list = []
     y_list = []
     x_ds = dataset[fields]
+    # minmax = preprocessing.MinMaxScaler()
+    # x_ds = minmax.fit_transform(x_ds)
+    # print('dataset transfer by MinMaxScaler', file=logfile)
+
     for i in range(seq_len - 1, len(dataset)):
         # a = preprocessing.scale(x_ds[i+1-seq_len: i+1])         #做scale 零均值单位方差 标准化
-        a = np.array(x_ds[i+1-conf.seq_len: i+1])             #不做标准化
+        # print('dataset transfer by scale')
+        a = np.array(x_ds[i+1-seq_len: i+1])                  #不做标准化
         x_list.append(a)
         # print('i -> ', i)
         # print('a -> ', a)
