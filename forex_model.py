@@ -34,16 +34,6 @@ def build_model(lstm_input_shape, logfile):
     #                         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None,
     #                         activity_regularizer=None, kernel_constraint=None, bias_constraint=None)
 
-    # layers = [1, 72, 1]
-    # model.add(LSTM(input_dim=layers[0], output_dim=layers[1], return_sequences=True))
-    # model.add(Dropout(0.2))
-    # model.add(LSTM(layers[1], return_sequences=False))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(input_dim=layers[1], output_dim=layers[2]))
-    # model.add(Activation("linear"))
-    # rms = optimizers.RMSprop(lr=conf.lr, rho=0.9, epsilon=1e-06)
-    # model.compile(loss="mse", optimizer=rms)
-
     #指标 MAE	0.0004038450282180454
     #指标 MSE     3.491123079607465e-7
     #指标 RMSE   0.0005908572653024979
