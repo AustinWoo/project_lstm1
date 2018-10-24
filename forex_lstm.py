@@ -4,8 +4,7 @@ import forex_model
 import datetime
 
 
-
-class conf:
+class Conf:
     # dataset conf
     seq_len = 72
     filename = '/Users/Austin.Woo/Downloads/ADB_export_adm_raw_export_h1_lstm_v2_part1_tiny.csv'
@@ -26,11 +25,11 @@ if __name__ == '__main__':
     t1 = datetime.datetime.now()
     print('start build dataset -> ', t1)
     # 训练数据
-    ds = forex_dataset.load_dataset(conf.filename, conf.fields)
-    x_train, y_train = forex_dataset.transfer_dataset(ds, conf.seq_len, conf.fields, logfile)
+    ds = forex_dataset.load_dataset(Conf.filename, Conf.fields)
+    x_train, y_train = forex_dataset.transfer_dataset(ds, Conf.seq_len, Conf.fields, logfile)
     # 测试数据
-    ds_test = forex_dataset.load_dataset(conf.filename_test, conf.fields)
-    x_test, y_test = forex_dataset.transfer_dataset(ds_test, conf.seq_len, conf.fields, logfile)
+    ds_test = forex_dataset.load_dataset(Conf.filename_test, Conf.fields)
+    x_test, y_test = forex_dataset.transfer_dataset(ds_test, Conf.seq_len, Conf.fields, logfile)
 
     t2 = datetime.datetime.now()
     print('build dataset done -> ', t2)
@@ -45,7 +44,7 @@ if __name__ == '__main__':
     model = forex_model.build_model(lstm_input_shape, logfile)
     t3 = datetime.datetime.now()
     print('start train model -> ', t3, file=logfile)
-    train_history = model.fit(x=x_train, y=y_train, batch_size=conf.batch_size, epochs=conf.epochs, verbose=2, validation_split=0.2)
+    train_history = model.fit(x=x_train, y=y_train, batch_size=Conf.batch_size, epochs=conf.epochs, verbose=2, validation_split=0.2)
     t4 = datetime.datetime.now()
     print('train model done -> ', t4, file=logfile)
     print('train model cost ->', (t4-t3).seconds/60, 'mins', file=logfile)
@@ -54,9 +53,9 @@ if __name__ == '__main__':
     forex_model.model_train_plot(train_history)
 
     # 训练数据集评估
-    scores_train = model.evaluate(x_train, y_train, batch_size=conf.batch_size, verbose=1)
+    scores_train = model.evaluate(x_train, y_train, batch_size=Conf.batch_size, verbose=1)
     print('训练集评估:', model.metrics_names, ' -> ', scores_train, file=logfile)
-    score_test = model.evaluate(x_test, y_train, batch_size=conf.batch_size, verbose=1)
+    score_test = model.evaluate(x_test, y_train, batch_size=Conf.batch_size, verbose=1)
     print('测试集评估:', model.metrics_names, ' -> ', score_test, file=logfile)
 
     # 使用模型预测数据
