@@ -10,14 +10,14 @@ from matplotlib import pyplot as plt
 
 def build_model(lstm_input_shape, logfile):
     model = Sequential()
-    # model.add(LSTM(units=100, input_shape=lstm_input_shape))
+    model.add(LSTM(units=100, input_shape=lstm_input_shape))
     # (6136, 72, 13)
-    model.add(LSTM(units=90, input_shape=lstm_input_shape, return_sequences=True))
-    model.add(LSTM(units=90, dropout=0.1, return_sequences=True)) #, recurrent_dropout=0.2
-    model.add(LSTM(units=90, dropout=0.1))
+    # model.add(LSTM(units=40, input_shape=lstm_input_shape, return_sequences=True))
+    # model.add(LSTM(units=40, dropout=0.1, return_sequences=True)) #, recurrent_dropout=0.2
+    # model.add(LSTM(units=40, dropout=0.1))
     model.add(Dense(1))
-    rms = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-06)
-    model.compile(loss='mse', optimizer=rms)
+    # rms = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-06)
+    model.compile(loss='mae', optimizer='adam')
 
     # optimizer='rmsprop'
     # optimizer='rms'

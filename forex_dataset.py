@@ -7,11 +7,23 @@ import pandas as pd
 #     filename = 'abc.csv'
 #     fields = ['']
 
-def load_data(filename, fields):
+def load_data(filename, fields, shift):
     # 导入数据
     ds = pd.read_csv(filename, index_col=0)
     ds.sort_index(inplace=True)
     ds = ds.ix[:, fields]
+    ds['lable'] = (ds['close'].shift(shift)+ds['open'].shift(shift))/2
+    ds.dropna(inplace=True)
+    ds.reset_index(drop=True, inplace=True)
+    return ds
+
+
+def load_data_with_ReturnRate(filename, fields, shift):
+    # 导入数据
+    ds = pd.read_csv(filename, index_col=0)
+    ds.sort_index(inplace=True)
+    ds = ds.ix[:, fields]
+    ds['lable'] = (ds['close'].shift(shift) + ds['open'].shift(shift)) / (ds['close'] + ds['open'])
     ds.dropna(inplace=True)
     ds.reset_index(drop=True, inplace=True)
     return ds
@@ -20,8 +32,8 @@ def load_data(filename, fields):
 def x_dataset(dataset, seq_len, fields, logfile):
     x_list = []
     x_ds = dataset[fields]
-    print('x dataset transfer by Nothing', file=logfile)
-    for i in range(seq_len - 1, len(dataset)):
+    print('x dataset transfer by nothing', file=logfile)
+    for i in range(seq_len - 1, len(x_ds)):
         a = np.array(x_ds[i + 1 - seq_len: i + 1])  # 不做标准化
         x_list.append(a)
     return np.array(x_list)
@@ -33,31 +45,25 @@ def x_dataset_by_Mean(dataset, seq_len, fields, logfile):
     return x_list
 
 
-    # 数据标准化 MinMaxScaler
+    # 数据标准化 by MinMaxScaler
 def x_dataset_by_MinMaxScaler(dataset, seq_len, fields, logfile):
     x_list = []
     x_ds = dataset[fields]
     minmax = preprocessing.MinMaxScaler()
     x_ds = minmax.fit_transform(x_ds)
     print('x dataset transfer by MinMaxScaler', file=logfile)
-    for i in range(seq_len - 1, len(dataset)):
+    for i in range(seq_len - 1, len(x_ds)):
         a = np.array(x_ds[i + 1 - seq_len: i + 1])
         x_list.append(a)
     return np.array(x_list), minmax
 
 
-    # 数据标准化六
-    # from sklearn.preprocessing import scale
-    # for i in range(conf.seq_len-1, len(traindata)):
-    #     a = scale(scaledata[i+1-conf.seq_len:i+1])
-    #     train_input.append(a)
-    #     c = data['return'][i]
-    #     train_output.append(c)
+    # 数据标准化 by scale
 def x_dataset_by_scale(dataset, seq_len, fields, logfile):
     x_list = []
     x_ds = dataset[fields]
     print('x dataset transfer by scale', file=logfile)
-    for i in range(seq_len - 1, len(dataset)):
+    for i in range(seq_len - 1, len(x_ds)):
         a = preprocessing.scale(x_ds[i+1-seq_len: i+1])         #做scale 零均值单位方差 标准化
         x_list.append(a)
     return np.array(x_list)
@@ -95,61 +101,15 @@ def x_dataset_by_StartByZero(dataset, seq_len, fields, logfile):
     return x_list
 
 
-# 最后几行的数据问题
-def y_dataset(dataset, seq_len, shift, logfile):
+def y_dataset(dataset, seq_len, logfile):
     y_list = []
     print('y dataset transfer by nothing', file=logfile)
     ds = dataset
-    ds['lable'] = (ds['close'].shift(shift) + ds['open'].shift(shift)) / 2
-    # ds['lable'] = ds['lable'].apply(lambda x: np.where(x >= 0.2, 0.2, np.where(x > -0.2, x, -0.2)))   #取极值
-    for i in range(seq_len - 1, len(dataset)):
-        r = dataset['lable'][i]
+    for i in range(seq_len - 1, len(ds)):
+        r = ds['lable'][i]
         y_list.append(r)
     return np.array(y_list)
 
-
-def y_dataset_by_ReturnRate(dataset, seq_len, shift, logfile):
-    y_list = []
-    print('y dataset transfer by nothing', file=logfile)
-    ds = dataset
-    ds['lable'] = (ds['close'].shift(shift) + ds['open'].shift(shift)) / (ds['close'] + ds['open'])
-    # ds['lable'] = ds['lable'].apply(lambda x: np.where(x >= 0.2, 0.2, np.where(x > -0.2, x, -0.2)))
-    for i in range(seq_len - 1, len(dataset)):
-        r = dataset['lable'][i]
-        y_list.append(r)
-    return np.array(y_list)
-
-
-# def transfer_dataset(dataset, seq_len, fields, logfile):
-#     x_list = []
-#     y_list = []
-#     x_ds = dataset[fields]
-#     # minmax = preprocessing.MinMaxScaler()
-#     # x_ds = minmax.fit_transform(x_ds)
-#     # print('dataset transfer by MinMaxScaler', file=logfile)
-#     for i in range(seq_len - 1, len(dataset)):
-#         # a = preprocessing.scale(x_ds[i+1-seq_len: i+1])     #做scale 零均值单位方差 标准化
-#         # print('dataset transfer by scale')
-#         a = np.array(x_ds[i+1-seq_len: i+1])                  #不做标准化
-#         x_list.append(a)
-#         # print('i -> ', i)
-#         # print('a -> ', a)
-#         # print('a.mean(axis=0) -> ', a.mean(axis=0))
-#         # print('a.std(axis=0) -> ', a.std(axis=0))
-#         r = dataset['lable'][i]
-#         y_list.append(r)
-#     return np.array(x_list), np.array(y_list)
-#
-#
-# def load_dataset(filename, fields):
-#     # 导入数据
-#     ds = pd.read_csv(filename, index_col=0)
-#     ds.sort_index(inplace=True)
-#     ds = ds.ix[:, fields]
-#     ds['lable'] = (ds['close'].shift(-1)+ds['open'].shift(-1))/2
-#     ds.dropna(inplace=True)
-#     ds.reset_index(drop=True, inplace=True)
-#     return ds
 
 if __name__ == '__main__':
     print('main function')
