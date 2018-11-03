@@ -61,7 +61,7 @@ if __name__ == '__main__':
     # 训练数据集评估
     scores_train = model.evaluate(x_train, y_train, batch_size=Conf.batch_size, verbose=1)
     print('训练集评估:', model.metrics_names, ' -> ', scores_train, file=logfile)
-    score_test = model.evaluate(x_test, y_train, batch_size=Conf.batch_size, verbose=1)
+    score_test = model.evaluate(x_test, y_test, batch_size=Conf.batch_size, verbose=1)
     print('测试集评估:', model.metrics_names, ' -> ', score_test, file=logfile)
 
     # 使用模型预测数据
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     print('=====训练集分数=====', file=logfile)
     forex_model.model_score(y_train, predict_train, logfile=logfile)
     print('=====测试集分数=====', file=logfile)
-    forex_model.model_score(x_test, predict_test, logfile=logfile)
+    forex_model.model_score(y_test, predict_test, logfile=logfile)
 
     print('y_train -> ', y_train, file=logfile)
     print('predict_train -> ', predict_train, file=logfile)

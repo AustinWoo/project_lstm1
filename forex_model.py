@@ -43,8 +43,11 @@ def build_model(lstm_input_shape, logfile):
 
 def model_score(y_actual, y_predict, logfile):
     # 评估模型
+
     train_score = math.sqrt(metrics.mean_squared_error(y_actual, y_predict[:, 0]))
     print('Model Score: RMSE -> ', train_score, file=logfile)
+    # print('y_actual.shape -> ', y_actual.shape)
+    # print('y_predict[:, 0].shape', y_predict[:, 0].shape)
     sum_error = 0
     for i in range(len(y_predict)):
         if i > 0:
